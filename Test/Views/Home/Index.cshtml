@@ -1,0 +1,33 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Запись к врачу</title>
+</head>
+<body>
+    <div class="row">
+        <div class="col-md-3">
+            <h3>Дата записи</h3>
+            <input type="date" name="calendar" value="@ViewBag.DateNow" max="@ViewBag.DateMax" min="@ViewBag.DateNow"><br />
+            <div>
+                @foreach (var doc in ViewBag.Doctors)
+                {
+                    <form method="post" action="SelectDoctor">
+                        <input type="checkbox" "@doc.Id" value="@doc.Id"/>@doc.ToString()<br />
+                    </form>
+                }
+                @*<p><a href="/Home/Record/@ViewBag.Id">Выбрать</a></p>*@
+            </div>
+        </div>
+        <div class="col-md-9">
+            <h3>Расписание специалиста</h3>
+        </div>
+    </div>
+
+</body>
+</html>
