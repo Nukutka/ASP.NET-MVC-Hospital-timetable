@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Test.Models.IndexParamsModel
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -13,21 +14,40 @@
     <div class="row">
         <div class="col-md-3">
             <h3>Дата записи</h3>
-            <input type="date" name="calendar" value="@ViewBag.DateNow" max="@ViewBag.DateMax" min="@ViewBag.DateNow"><br />
+            <input type="date" name="calendar" value="@ViewBag.DateNow"><br />
             <div>
-                @foreach (var doc in ViewBag.Doctors)
-                {
-                    <form method="post" action="SelectDoctor">
-                        <input type="checkbox" "@doc.Id" value="@doc.Id"/>@doc.ToString()<br />
-                    </form>
-                }
-                @*<p><a href="/Home/Record/@ViewBag.Id">Выбрать</a></p>*@
+                <form method="post" action="SelectDoctor">
+                    @foreach (var doc in Model.Doctors)
+                    {
+                        <input type="checkbox" name="Doctor" value="@doc.Id" />@doc.ToString()<br />
+                    }
+                    <input type="submit" value="Выбрать" />
+                </form>
             </div>
         </div>
         <div class="col-md-9">
-            <h3>Расписание специалиста</h3>
+            <div class="row">
+                <h3>Расписание специалисов</h3>
+                @foreach (var doc in Model.SelectedDoctors)
+                {
+                    <div class="col-md-2">
+                        <table>
+                            <tr>
+                                <td>
+                                    Специалист
+                                    <br />
+                                    @doc.ToString()
+                                </td>
+                            </tr>
+                            @foreach (var c in doc.TimeTables.First().Cells)
+                            {
+                                <tr><td>@c.IsEmpty</td></tr>
+                            }
+                        </table>
+                    </div>
+                }
+            </div>
         </div>
     </div>
-
 </body>
 </html>

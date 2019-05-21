@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -10,14 +11,24 @@ namespace Test.Models
     /// </summary>
     public class TimeTable
     {
-        public int Id { get; set; }             // Id для БД
+        public int Id { get; set; }             // ID для БД
         public DateTime Date { get; set; }      // Дата
-        public List<Cell> Cells { get; set; }   // Список ячеек
+        public ICollection<Cell> Cells { get; set; }   // Список ячеек
 
-        public TimeTable(DateTime date, List<Cell> cells)
+        [ForeignKey("Doctor")]
+        public int DoctorId { get; set; }
+        public virtual Doctor Doctor { get; set; }
+
+        public TimeTable() { }
+        public TimeTable(DateTime date, ICollection<Cell> cells)
         {
             Date = date;
             Cells = cells;
+        }
+
+        public override string ToString()
+        {
+            return Id.ToString();
         }
     }
 }

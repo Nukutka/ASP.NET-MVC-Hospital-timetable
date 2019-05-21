@@ -134,6 +134,7 @@
     <Compile Include="Models\Cell.cs" />
     <Compile Include="Models\DoctorContext.cs" />
     <Compile Include="Models\DoctorDbInitializer.cs" />
+    <Compile Include="Models\IndexParamsModel.cs" />
     <Compile Include="Models\Patient.cs" />
     <Compile Include="Models\People.cs" />
     <Compile Include="Models\Record.cs" />
@@ -174,7 +175,6 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\Record.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

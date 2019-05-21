@@ -10,7 +10,7 @@ namespace Test.Models
     /// </summary>
     public class Record
     {
-        public int Id { get; set; }            // Id для БД
+        public int Id { get; set; }            // ID для БД
         public Patient Patient { get; set; }   // Пациент
         public Doctor Doctor { get; set; }     // Специалист
         public DateTime DateTime { get; set; } // Время записи
