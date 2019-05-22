@@ -24,7 +24,7 @@ namespace Test.Models
         {
             for (int i = 0; i < 5; i++)
             {
-                ICollection<TimeTable> timeTables = GetRandomTimeTables(14);
+                ICollection<TimeTable> timeTables = GetRandomTimeTables(14, 10);
                 var doctor = new Doctor
                 {
                     FirstName = firstNames[i],
@@ -42,22 +42,21 @@ namespace Test.Models
         /// Возвращает случайное расписание
         /// </summary>
         /// <param name="days">Количество дней в расписании</param>
-        private List<TimeTable> GetRandomTimeTables(int days)
+        /// <param name="length">Длина в минутах приема одного пациента</param>
+        private List<TimeTable> GetRandomTimeTables(int days, int length)
         {
             var r = new Random();
             var timeTables = new List<TimeTable>(days);
-
             for (int i = 0; i < days; i++)
             {
                 var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).AddDays(i);
-                DateTime time = date;    
-                var cells = new List<Cell>(r.Next(5, 26)); // случайное количество записей в день
+                DateTime time = date;
+                var cells = new List<Cell>(r.Next(25, 36)); // случайное количество записей в день
                 time = time.AddHours(r.Next(8, 13));       // случайное начало дня 8,9,10,11,12
                 for (int j = 0; j < cells.Capacity; j++)
                 {
-                    var length = new TimeSpan(0, 10, 0);          // длина приема одного пациента
                     cells.Add(new Cell(time, r.Next(0, 2) == 0)); // случайное заполнение занятых ячеек 
-                    time += length;
+                    time += new TimeSpan(0, length, 0);
                 }
 
                 timeTables.Add(new TimeTable(date, cells));

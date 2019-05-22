@@ -8,18 +8,19 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/css/TimeTableStyle.css">
     <title>Запись к врачу</title>
 </head>
 <body>
     <div class="row">
         <div class="col-md-3">
             <h3>Дата записи</h3>
-            <input type="date" name="calendar" value="@ViewBag.DateNow"><br />
             <div>
                 <form method="post" action="SelectDoctor">
+                    <input type="date" name="calendar" value="@ViewBag.DateNow"><br />
                     @foreach (var doc in Model.Doctors)
                     {
-                        <input type="checkbox" name="Doctor" value="@doc.Id" />@doc.ToString()<br />
+                        <input type="checkbox" name="doctor" value="@doc.Id" />@doc.ToString()<br />
                     }
                     <input type="submit" value="Выбрать" />
                 </form>
@@ -31,21 +32,27 @@
                 @foreach (var doc in Model.SelectedDoctors)
                 {
                     <div class="col-md-2">
-                        <table>
+                        <table class="table table-condensed table-bordered">
                             <tr>
                                 <td>
                                     Специалист
                                     <br />
                                     @doc.ToString()
                                 </td>
-                            </tr>
-                            @foreach (var c in doc.TimeTables.First().Cells)
-                            {
-                                <tr><td>@c.IsEmpty</td></tr>
-                            }
-                        </table>
-                    </div>
-                }
+                                @foreach (var c in doc.TimeTables.First(x => x.Date == Model.SelectedDate).Cells)
+                                {
+                                    if (c.IsEmpty)
+                                    {
+                                    <tr><td bgcolor="#76e397"><a href="/Home/Record?docId=@doc.Id&cellId=@c.Id">@c.Time.ToShortTimeString()</a></td></tr>
+                                    }
+                                    else
+                                    {
+                                    <tr><td bgcolor="#e37676">@c.Time.ToShortTimeString()</td></tr>
+                                    }
+                                }
+                            </table>
+                        </div>
+                    }
             </div>
         </div>
     </div>
