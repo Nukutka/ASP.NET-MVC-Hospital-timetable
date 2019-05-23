@@ -14,19 +14,14 @@
         <h4>Вы записываетесь к специалисту @Model.Doctor.ToString() на @Model.Cell.Time.ToString()</h4>
         <form method="post" action="Record">
             <input type="hidden" value="@Model.Cell.Id" name="CellId" />
-            <table>
-                <tr>
-                    <td><p>Введите свое имя </p></td>
-                    <td><input type="text" name="Name" /> </td>
-                </tr>
-                <tr>
-                    <td><p>Введите телефон :</p></td>
-                    <td>
-                        <input type="text" name="PhoneNumber" />
-                    </td>
-                </tr>
-                <tr><td><input type="submit" value="Подтвердить" /> </td><td></td></tr>
-            </table>
+            <input type="hidden" value="@Model.Cell.Time.ToShortDateString()" name="SelDate" />
+            <p>Введите свое имя: </p>
+            <input type="text" name="Name" required />
+            <p>Введите свой телефон:</p>
+            <input type="text" name="PhoneNumber" value="+7" required pattern="+7[0-9]{10}" />
+            <br /><br />
+            <input type="button" onclick="history.back();" value="Отмена" /> 
+            <input type="submit" value="Подтвердить" />
         </form>
     </div>
 </body>

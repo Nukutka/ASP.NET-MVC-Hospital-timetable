@@ -17,11 +17,12 @@
             <h3>Дата записи</h3>
             <div>
                 <form method="post" action="SelectDoctor">
-                    <input type="date" name="calendar" value="@ViewBag.DateNow"><br />
+                    <input type="date" name="calendar" value="@ViewBag.CalendarDate"><br /><br />
                     @foreach (var doc in Model.Doctors)
                     {
                         <input type="checkbox" name="doctor" value="@doc.Id" />@doc.ToString()<br />
                     }
+                    <br />
                     <input type="submit" value="Выбрать" />
                 </form>
             </div>
@@ -39,16 +40,20 @@
                                     <br />
                                     @doc.ToString()
                                 </td>
-                                @foreach (var c in doc.TimeTables.First(x => x.Date == Model.SelectedDate).Cells)
-                                {
-                                    if (c.IsEmpty)
+                                @{ if (doc.TimeTables.FirstOrDefault(x => x.Date == Model.SelectedDate) != null)
                                     {
-                                    <tr><td bgcolor="#76e397"><a href="/Home/Record?docId=@doc.Id&cellId=@c.Id">@c.Time.ToShortTimeString()</a></td></tr>
+                                        foreach (var c in doc.TimeTables.First(x => x.Date == Model.SelectedDate).Cells)
+                                        {
+                                            if (c.IsEmpty)
+                                            {
+                                            <tr><td bgcolor="#76e397"><a href="/Home/Record?docId=@doc.Id&cellId=@c.Id&selDate=@Model.SelectedDate.ToShortDateString()">@c.Time.ToShortTimeString()</a></td></tr>
+                                        }
+                                        else
+                                        {
+                                            <tr><td bgcolor="#e37676">@c.Time.ToShortTimeString()</td></tr>
+                                        }
                                     }
-                                    else
-                                    {
-                                    <tr><td bgcolor="#e37676">@c.Time.ToShortTimeString()</td></tr>
-                                    }
+                                }
                                 }
                             </table>
                         </div>
