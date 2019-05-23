@@ -12,9 +12,10 @@ namespace Test.Models
     public class DoctorDbInitializer : DropCreateDatabaseAlways<DoctorContext>
     {
         // Потом надо убрать
-        private string[] firstNames =  { "Александр", "Никита", "Носок", "Олеся", "Мария" };
-        private string[] lastNames =   { "Анкудинов", "Бертов", "Кусок", "Клеин", "Отова" };
-        private string[] patronymics = { "Антонович", "Санвич", "Засок", "Слеся", "Арваи" };
+        private string[] firstNames =  { "Александр", "Никита", "Носок", "Олеся", "Мария", "Оксана", "Дамир", "Евгений", "Яна", "Боромир", "Гундир", "Собак", "Никита", "Денис", "Лариса" };
+        private string[] lastNames =   { "Анкудинов", "Бертов", "Кусок", "Клеин", "Отова", "Копчикова", "Кленов", "Жеистов", "Черикова", "Вафлин", "Семейный", "Котов", "Крупцов", "Улеткин", "Черепанова" };
+        private string[] patronymics = { "Антонович", "Санвич", "Засок", "Слеся", "Арваи", "Сергеевна", "Никитич", "Раисович", "Романовна", "Гендальфович", "Сергеевич", "Бобикович", "Витальевич", "Челиковач", "Мариновна" };
+
 
         /// <summary>
         /// Перезаписывает данные таблиц в БД
@@ -22,7 +23,7 @@ namespace Test.Models
         /// <param name="dc"></param>
         protected override void Seed(DoctorContext dc)
         {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 15; i++)
             {
                 ICollection<TimeTable> timeTables = GetRandomTimeTables(14, 10);
                 var doctor = new Doctor

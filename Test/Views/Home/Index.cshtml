@@ -4,12 +4,12 @@
 }
 
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <link rel="stylesheet" href="~/css/TimeTableStyle.css">
     <link rel="stylesheet" href="~/css/ScrollableList.css">
+    <link rel="stylesheet" href="~/css/HorizontalLine.css">
     <title>Запись к врачу</title>
 </head>
 <body>
@@ -18,14 +18,16 @@
             <h3>Дата записи</h3>
             <div>
                 <form method="post" action="SelectDoctor">
-                    <input type="date" name="calendar" value="@ViewBag.CalendarDate"><br /><br />
-                    <div class="scrollable-list">
+                    <input type="date" width="200" name="calendar" value="@ViewBag.CalendarDate"><br /><br />
+                    <div class="scrollable-list-y">
                         @foreach (var doc in Model.Doctors)
                         {
-                            <input type="checkbox" name="doctor" value="@doc.Id" />@doc.ToString()<br />
+                            <div class="horizontal-line"></div>
+                            <input type="checkbox" name="doctor" value="@doc.Id" />@doc.ToString()
                         }
                     </div>
                     <br />
+                    <input type="reset" value="Сбросить" />
                     <input type="submit" value="Выбрать" />
                 </form>
             </div>
@@ -64,5 +66,8 @@
             </div>
         </div>
     </div>
+    @section scripts {
+        @Scripts.Render("~/Scripts/MyScripts/blockCheckBox.js")
+    }
 </body>
 </html>
