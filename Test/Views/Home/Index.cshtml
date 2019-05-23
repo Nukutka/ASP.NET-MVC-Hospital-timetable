@@ -9,6 +9,7 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <link rel="stylesheet" href="~/css/TimeTableStyle.css">
+    <link rel="stylesheet" href="~/css/ScrollableList.css">
     <title>Запись к врачу</title>
 </head>
 <body>
@@ -18,10 +19,12 @@
             <div>
                 <form method="post" action="SelectDoctor">
                     <input type="date" name="calendar" value="@ViewBag.CalendarDate"><br /><br />
-                    @foreach (var doc in Model.Doctors)
-                    {
-                        <input type="checkbox" name="doctor" value="@doc.Id" />@doc.ToString()<br />
-                    }
+                    <div class="scrollable-list">
+                        @foreach (var doc in Model.Doctors)
+                        {
+                            <input type="checkbox" name="doctor" value="@doc.Id" />@doc.ToString()<br />
+                        }
+                    </div>
                     <br />
                     <input type="submit" value="Выбрать" />
                 </form>
