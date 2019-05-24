@@ -1,4 +1,5 @@
-﻿@model Test.Models.IndexParamsModel
+﻿@using Test.Models
+@model IndexParamsModel
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -7,9 +8,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <link rel="stylesheet" href="~/css/TimeTableStyle.css">
-    <link rel="stylesheet" href="~/css/ScrollableList.css">
-    <link rel="stylesheet" href="~/css/HorizontalLine.css">
+    <link rel="stylesheet" href="~/Content/MyStyles/my-styles.css">
     <title>Запись к врачу</title>
 </head>
 <body>
@@ -17,13 +16,20 @@
         <div class="col-md-3">
             <h3>Дата записи</h3>
             <div>
-                <form method="post" action="SelectDoctor">
+                <form method="post" action="/Home/SelectDoctor">
                     <input type="date" width="200" name="calendar" value="@ViewBag.CalendarDate"><br /><br />
-                    <div class="scrollable-list-y">
+                    <div class="scrollable-list">
                         @foreach (var doc in Model.Doctors)
                         {
                             <div class="horizontal-line"></div>
-                            <input type="checkbox" name="doctor" value="@doc.Id" />@doc.ToString()
+                            if (Model.SelectedDoctors.Contains(doc))
+                            {
+                                <input type="checkbox" name="doctor" value="@doc.Id" checked />@doc.ToString()
+                            }
+                            else
+                            {
+                                <input type="checkbox" name="doctor" value="@doc.Id" />@doc.ToString()
+                            }
                         }
                     </div>
                     <br />
@@ -44,6 +50,8 @@
                                     Специалист
                                     <br />
                                     @doc.ToString()
+                                    <br />
+                                    @Model.SelectedDate.ToShortDateString()
                                 </td>
                                 @{ if (doc.TimeTables.FirstOrDefault(x => x.Date == Model.SelectedDate) != null)
                                     {
@@ -51,7 +59,8 @@
                                         {
                                             if (c.IsEmpty)
                                             {
-                                            <tr><td bgcolor="#76e397"><a href="/Home/Record?docId=@doc.Id&cellId=@c.Id&selDate=@Model.SelectedDate.ToShortDateString()">@c.Time.ToShortTimeString()</a></td></tr>
+                                               
+                                            <tr><td bgcolor="#76e397">@Html.ActionLink(c.Time.ToShortTimeString(), "Record", "Home", new { docId = doc.Id, cellId = c.Id, selDate = Model.SelectedDate}, null)</td></tr>
                                         }
                                         else
                                         {

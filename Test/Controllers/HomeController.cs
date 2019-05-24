@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Test.Models;
@@ -23,16 +24,16 @@ namespace Test.Controllers
         /// <summary>
         /// Генерация данных для представления Index
         /// </summary>
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             IndexParamsModel indexModel;
 
             using (var dc = new DoctorContext())
             {
-                var doctors = dc.Doctors.ToList();
-                var cells = dc.Cells
+                var doctors = await dc.Doctors.ToListAsync();
+                var cells = await dc.Cells
                     .Include(x => x.TimeTable)
-                    .ToList();
+                    .ToListAsync();
 
                 indexModel = new IndexParamsModel
                 {
@@ -42,6 +43,7 @@ namespace Test.Controllers
                 };
                 ViewBag.CalendarDate = GetDateForCalendar(DateTime.Now);
             }
+
             return View(indexModel);
         }
 
@@ -96,7 +98,6 @@ namespace Test.Controllers
                     ViewBag.CalendarDate = tmpDate ?? GetDateForCalendar(DateTime.Now);
                 }
             }
-
             return View("Index", indexModel);
         }
 

@@ -10,8 +10,8 @@ namespace Test.Models
     /// </summary>
     public class IndexParamsModel
     {
-        public IEnumerable<Doctor> Doctors { get; set; }
-        public IEnumerable<Doctor> SelectedDoctors { get; set; }
-        public DateTime SelectedDate { get; set; } // Для расписаний выбранных специалистов
+        public IEnumerable<Doctor> Doctors { get; set; }         // Все специалист для списка слева
+        public IEnumerable<Doctor> SelectedDoctors { get; set; } // Выбранные специалисты для отображения их расписаний
+        public DateTime SelectedDate { get; set; }               // Для расписаний выбранных специалистов
     }
 }

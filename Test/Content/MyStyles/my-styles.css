@@ -1,0 +1,22 @@
+﻿.horizontal-line {
+    height: 7px;
+    width: 500px;
+    border-top: 1px solid #dddddd;
+    padding-left: 10px
+}
+
+.scrollable-list {
+    border: 1px solid #ccc;
+    width: 200px;
+    height: 300px;
+    overflow-y: scroll;
+}
+
+th {
+    text-align: center
+}
+
+td {
+    text-align: center
+}
+
