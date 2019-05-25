@@ -133,12 +133,10 @@
     <Compile Include="Models\Doctor.cs" />
     <Compile Include="Models\Cell.cs" />
     <Compile Include="Models\DoctorContext.cs" />
-    <Compile Include="Models\DoctorDbInitializer.cs" />
-    <Compile Include="Models\IndexParamsModel.cs" />
-    <Compile Include="Models\Patient.cs" />
-    <Compile Include="Models\People.cs" />
+    <Compile Include="Utils\DoctorDbInitializer.cs" />
+    <Compile Include="Models\Hospital.cs" />
+    <Compile Include="Models\Person.cs" />
     <Compile Include="Models\Record.cs" />
-    <Compile Include="Models\RecordParamsModel.cs" />
     <Compile Include="Models\TimeTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -165,7 +163,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Scripts\MyScripts\blockCheckBox.js" />
+    <Content Include="Scripts\MyScripts\block-checkbox.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -179,6 +177,8 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Record.cshtml" />
+    <Content Include="Views\Home\TTBlock.cshtml" />
+    <Content Include="Views\Home\TTColumn.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -214,7 +214,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50321</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:50321/</IISUrl>
+          <IISUrl>http://localhost:50000/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

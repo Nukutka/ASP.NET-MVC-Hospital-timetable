@@ -1,4 +1,4 @@
-﻿@model Test.Models.RecordParamsModel
+﻿@model Test.Models.Record
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -12,15 +12,15 @@
 <body>
     <div>
         <h4>Вы записываетесь к специалисту @Model.Doctor.ToString() на @Model.Cell.Time.ToString()</h4>
-        <form method="post" action="\Home\Record">
-            <input type="hidden" value="@Model.Cell.Id" name="CellId" />
-            <input type="hidden" value="@Model.Cell.Time.ToShortDateString()" name="SelDate" />
+        <form method="post" action="Record">
+            <input type="hidden" value="@Model.Cell.Id" name="cell-id" />
+            <input type="hidden" value="@Model.Cell.Time.ToShortDateString()" name="sel-date" />
             <p>Введите свое имя: </p>
-            <input type="text" name="Name" required />
+            <input type="text" name="name" required />
             <p>Введите свой телефон:</p>
-            <input type="text" name="PhoneNumber" value="+7" required pattern="+7[0-9]{10}" />
+            <input type="text" name="phone-number" value="+7" required pattern="+7[0-9]{10}" />
             <br /><br />
-            <input type="button" onclick="history.back();" value="Отмена" /> 
+            <input type="button" onclick="history.back();" value="Отмена" />
             <input type="submit" value="Подтвердить" />
         </form>
     </div>

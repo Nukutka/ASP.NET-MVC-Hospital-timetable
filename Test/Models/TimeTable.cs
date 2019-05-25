@@ -19,6 +19,8 @@ namespace Test.Models
         public int DoctorId { get; set; }
         public virtual Doctor Doctor { get; set; }
 
+        public string ShortDate => Date.ToShortDateString();
+
         public TimeTable() { }
         public TimeTable(DateTime date, ICollection<Cell> cells)
         {

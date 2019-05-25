@@ -6,7 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using Test.Models;
+using Test.Utils;
 
 namespace Test
 {
@@ -14,7 +14,7 @@ namespace Test
     {
         protected void Application_Start()
         {
-            Database.SetInitializer(new DoctorDbInitializer());
+            //Database.SetInitializer(new DoctorDbInitializer());
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);

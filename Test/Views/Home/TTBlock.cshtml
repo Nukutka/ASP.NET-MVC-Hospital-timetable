@@ -1,0 +1,14 @@
+﻿@model IEnumerable<Test.Models.TimeTable>
+
+<div class="col-md-9">
+    <div class="row">
+        <h3>Расписание специалистов</h3>
+        @{ foreach (var t in Model)
+            {
+                <div class="col-md-2">
+                    @{Html.RenderPartial("TTColumn", t);}
+                </div>
+            }
+        }
+    </div>
+</div>

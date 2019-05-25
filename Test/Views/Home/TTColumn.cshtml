@@ -1,0 +1,32 @@
+﻿@model Test.Models.TimeTable
+
+<table class="table table-condensed table-bordered">
+    <tr>
+        <td>
+            @Html.Label("Специалист")
+            <br />
+            @Html.DisplayTextFor(x => x.Doctor)
+            <br />
+            @Html.DisplayTextFor(x => x.ShortDate)
+        </td>
+    </tr>
+    @foreach (var cell in Model.Cells)
+    {
+        <tr>
+            @if (cell.IsEmpty)
+            {
+                <td bgcolor="#76e397">
+                    @Html.ActionLink(cell.Time.ToShortTimeString(), "Record", "Home",
+                        new { doctorId = Model.DoctorId, cellId = cell.Id, date = Model.Date.ToShortDateString() }, new { })
+                </td>
+            }
+            else
+            {
+                <td bgcolor="#f06565">
+                    @Html.Label(cell.Time.ToShortTimeString(), new { })
+                </td>
+            }
+        </tr>
+    }
+</table>
+

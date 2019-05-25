@@ -6,13 +6,12 @@ using System.Web;
 namespace Test.Models
 {
     /// <summary>
-    /// Модель записи пациента к специалисту, пока подумаю, нужна ли С:
+    /// Модель записи пациента к специалисту
     /// </summary>
     public class Record
     {
-        public int Id { get; set; }            // ID для БД
-        public Patient Patient { get; set; }   // Пациент
+        public int Id { get; set; }            // ID 
         public Doctor Doctor { get; set; }     // Специалист
-        public DateTime DateTime { get; set; } // Время записи
+        public Cell Cell { get; set; }         // Выбранная ячейка
     }
 }

@@ -1,5 +1,4 @@
-﻿@using Test.Models
-@model IndexParamsModel
+﻿@model Test.Models.Hospital
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -16,20 +15,13 @@
         <div class="col-md-3">
             <h3>Дата записи</h3>
             <div>
-                <form method="post" action="/Home/SelectDoctor">
-                    <input type="date" width="200" name="calendar" value="@ViewBag.CalendarDate"><br /><br />
+                <form method="get" action="/Home/Index">
+                    <input type="date" width="200" name="date" value="@ViewBag.CalendarDate"><br /><br />
                     <div class="scrollable-list">
                         @foreach (var doc in Model.Doctors)
                         {
                             <div class="horizontal-line"></div>
-                            if (Model.SelectedDoctors.Contains(doc))
-                            {
-                                <input type="checkbox" name="doctor" value="@doc.Id" checked />@doc.ToString()
-                            }
-                            else
-                            {
-                                <input type="checkbox" name="doctor" value="@doc.Id" />@doc.ToString()
-                            }
+                            <input type="checkbox" name="doctor" value="@doc.Id" />@doc.ToString()
                         }
                     </div>
                     <br />
@@ -38,45 +30,10 @@
                 </form>
             </div>
         </div>
-        <div class="col-md-9">
-            <div class="row">
-                <h3>Расписание специалисов</h3>
-                @foreach (var doc in Model.SelectedDoctors)
-                {
-                    <div class="col-md-2">
-                        <table class="table table-condensed table-bordered">
-                            <tr>
-                                <td>
-                                    Специалист
-                                    <br />
-                                    @doc.ToString()
-                                    <br />
-                                    @Model.SelectedDate.ToShortDateString()
-                                </td>
-                                @{ if (doc.TimeTables.FirstOrDefault(x => x.Date == Model.SelectedDate) != null)
-                                    {
-                                        foreach (var c in doc.TimeTables.First(x => x.Date == Model.SelectedDate).Cells)
-                                        {
-                                            if (c.IsEmpty)
-                                            {
-                                               
-                                            <tr><td bgcolor="#76e397">@Html.ActionLink(c.Time.ToShortTimeString(), "Record", "Home", new { docId = doc.Id, cellId = c.Id, selDate = Model.SelectedDate}, null)</td></tr>
-                                        }
-                                        else
-                                        {
-                                            <tr><td bgcolor="#e37676">@c.Time.ToShortTimeString()</td></tr>
-                                        }
-                                    }
-                                }
-                                }
-                            </table>
-                        </div>
-                    }
-            </div>
-        </div>
+        @Html.Action("ShowTimeTables", "Home", new { doctorIds = ViewBag.Indexes, date = ViewBag.CalendarDate })
     </div>
     @section scripts {
-        @Scripts.Render("~/Scripts/MyScripts/blockCheckBox.js")
+        @Scripts.Render("~/Scripts/MyScripts/block-checkbox.js")
     }
 </body>
 </html>

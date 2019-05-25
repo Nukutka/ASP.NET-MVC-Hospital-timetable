@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Test.Models;
@@ -12,134 +11,123 @@ namespace Test.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly CultureInfo culture;           // для парсинга дат
-        private readonly DateTimeStyles dateTimeStyles;
-
-        public HomeController()
-        {
-            culture = CultureInfo.CurrentCulture;
-            dateTimeStyles = DateTimeStyles.NoCurrentDateDefault;
-        }
+        public HomeController() { }
 
         /// <summary>
         /// Генерация данных для представления Index
         /// </summary>
-        public async Task<ActionResult> Index()
+        [HttpGet]
+        public ActionResult Index()
         {
-            IndexParamsModel indexModel;
+            Hospital hospital;
 
-            using (var dc = new DoctorContext())
+            using (var dc = new DataContext())
             {
-                var doctors = await dc.Doctors.ToListAsync();
-                var cells = await dc.Cells
-                    .Include(x => x.TimeTable)
-                    .ToListAsync();
-
-                indexModel = new IndexParamsModel
-                {
-                    Doctors = doctors,
-                    SelectedDoctors = new List<Doctor>(),
-                    SelectedDate = new DateTime(0)
-                };
-                ViewBag.CalendarDate = GetDateForCalendar(DateTime.Now);
+                hospital = dc.Hospitals
+                    .Include(x => x.Doctors)
+                    .First();
             }
 
-            return View(indexModel);
+            ViewBag.CalendarDate = Request.Params["date"] ?? GetDateForCalendar(DateTime.Now);
+            ViewBag.Indexes = new int[] { };
+
+            if (!string.IsNullOrEmpty(Request.Params["doctor"]))
+            {
+                ViewBag.Indexes = Request.Params["doctor"]
+                    .Split(',')
+                    .Select(x => int.Parse(x))
+                    .ToArray();
+            }
+
+            return View(hospital);
         }
 
         /// <summary>
-        /// Обновление страницы в соответствии с выбранными специалистами
+        /// Выводит расписания специалистов через частичное представление
         /// </summary>
-        [HttpPost]
-        public ActionResult SelectDoctor()
+        /// <param name="doctorIds">Идентификаторы специалистов</param>
+        /// <param name="date">Дата</param>
+        public ActionResult ShowTimeTables(int[] doctorIds, DateTime? date)
         {
-            IndexParamsModel indexModel;
+            List<TimeTable> timeTables = new List<TimeTable>();
 
-            using (var dc = new DoctorContext())
+            if (doctorIds != null && date.HasValue)
             {
-                var doctors = dc.Doctors.ToList();
-                var cells = dc.Cells
-                    .Include(x => x.TimeTable)
-                    .ToList();
-
-                string tmpDate = Request.Form["Calendar"]; 
-                string tmpIds = Request.Form["Doctor"];
-
-                // Если выбрана дата и специлисты, готовим данные для представления
-                if (DateTime.TryParseExact(tmpDate, "yyyy-MM-dd", culture, dateTimeStyles, out var selectedDate) && tmpIds != null)
+                foreach (var id in doctorIds)
                 {
-                    IEnumerable<int> doctorsId = tmpIds.Split(',')
-                        .Select(x => int.Parse(x));
-
-                    var selectedDoctors = new List<Doctor>();
-
-                    foreach (var i in doctorsId)  // Создание списка выбранных специалистов
-                    {
-                        Doctor doc = doctors.First(x => x.Id == i);
-                        selectedDoctors.Add(doc);
-                    }
-
-                    indexModel = new IndexParamsModel
-                    {
-                        Doctors = doctors,
-                        SelectedDoctors = selectedDoctors,
-                        SelectedDate = selectedDate
-                    };
-                    ViewBag.CalendarDate = tmpDate;
-                }
-                else // Иначе ничего не меняем
-                {
-                    indexModel = new IndexParamsModel
-                    {
-                        Doctors = doctors,
-                        SelectedDoctors = new List<Doctor>(),
-                        SelectedDate = new DateTime(0)
-                    };
-                    ViewBag.CalendarDate = tmpDate ?? GetDateForCalendar(DateTime.Now);
+                    timeTables.Add(LoadTimeTable(id, date.Value));
                 }
             }
-            return View("Index", indexModel);
+
+            return PartialView("TTBlock", timeTables);
+        }
+
+        /// <summary>
+        /// Загружает из БД расписание конкретного специалиста на определенную дату
+        /// </summary>
+        /// <param name="doctorId">Идентификатор специалиста</param>
+        /// <param name="date">Дата</param>
+        private TimeTable LoadTimeTable(int doctorId, DateTime date)
+        {
+            TimeTable timeTable;
+
+            using (var dc = new DataContext())
+            {
+                timeTable = dc.TimeTables
+                   .Include(x => x.Cells)
+                   .Include(x => x.Doctor)
+                   .Where(x => x.DoctorId == doctorId)
+                   .Where(x => x.Date == date)
+                   .ToList()
+                   .FirstOrDefault();
+            }
+
+            return timeTable;
         }
 
         /// <summary>
         /// Переход на форму подтверждения записи
         /// </summary>
-        /// <param name="docId">Id специалиста</param>
+        /// <param name="doctorId">Id специалиста</param>
         /// <param name="cellId">Id выбранной ячейки</param>
+        /// <param name="date">Выбранная дата</param>
         [HttpGet]
-        public ActionResult Record(int? docId, int? cellId, string selDate)
+        public ActionResult Record(int? doctorId, int? cellId, string date)
         {
-            RecordParamsModel recordModel;
-            IndexParamsModel indexModel;
+            Record record;
+            Hospital hospital;
 
-            using (var dc = new DoctorContext())
+            if (doctorId != null && cellId != null && date != null)  // Если все параметры введены, переходим на Record
             {
-                var doctors = dc.Doctors.ToList();
-                var cells = dc.Cells
-                    .Include(x => x.TimeTable)
-                    .ToList();
+                using (var dc = new DataContext())
+                {
+                    var doctor = dc.Doctors
+                        .FirstOrDefault(x => x.Id == doctorId);
+                    var cell = dc.Cells
+                        .Include(x => x.TimeTable)
+                        .FirstOrDefault(x => x.Id == cellId);
 
-                if (docId != null && cellId != null && selDate != null) // Если все параметры введены, переходим на Record
-                {
-                    recordModel = new RecordParamsModel
+                    record = new Record
                     {
-                        Doctor = doctors.First(x => x.Id == docId),
-                        Cell = cells.First(x => x.Id == cellId)
+                        Doctor = doctor,
+                        Cell = cell
                     };
-                    return View("Record", recordModel);
                 }
-                else // Иначе остаемся в Index
-                {
-                    indexModel = new IndexParamsModel
-                    {
-                        Doctors = doctors,
-                        SelectedDoctors = new List<Doctor>(),
-                        SelectedDate = DateTime.ParseExact(selDate, "yyyy-MM-dd", culture, dateTimeStyles)
-                    };
-                    ViewBag.CalendarDate = selDate;
-                    return View("Index", indexModel);
-                }
+
+                return View(record);
             }
+
+            else // Иначе остаемся в Index
+            {
+                using (var dc = new DataContext())
+                {
+                    hospital = dc.Hospitals.Include(x => x.Doctors).First();
+                }
+                ViewBag.CalendarDate = date ?? GetDateForCalendar(DateTime.Now);
+
+                return View("Index", hospital);
+            }
+
         }
 
         /// <summary>
@@ -148,34 +136,28 @@ namespace Test.Controllers
         [HttpPost]
         public ActionResult Record()
         {
-            IndexParamsModel indexModel;
+            Hospital hospital;
 
-            using (var dc = new DoctorContext())
+            using (var dc = new DataContext())
             {
-                var doctors = dc.Doctors.ToList();
                 var cells = dc.Cells
                     .Include(x => x.TimeTable)
                     .ToList();
 
-                string selDate = Request.Form["SelDate"];
-
-                int cellId = int.Parse(Request.Form["CellId"]);
+                int cellId = int.Parse(Request.Form["cell-id"]);
                 int index = cells.FindIndex(x => x.Id == cellId);
                 cells[index].IsEmpty = false;       // Занимаем ячейку
 
                 dc.SaveChanges();
 
-                indexModel = new IndexParamsModel
-                {
-                    Doctors = doctors,
-                    SelectedDoctors = new List<Doctor>(),
-                    SelectedDate = DateTime.ParseExact(selDate, "dd.MM.yyyy", culture, dateTimeStyles)
-                };
-
+                hospital = dc.Hospitals
+                    .Include(x => x.Doctors)
+                    .FirstOrDefault();
             }
-            ViewBag.CalendarDate = GetDateForCalendar(indexModel.SelectedDate);
 
-            return View("Index", indexModel);
+            ViewBag.CalendarDate = GetDateForCalendar(DateTime.Parse(Request.Form["sel-date"]));
+
+            return View("Index", hospital);
         }
 
         /// <summary>
