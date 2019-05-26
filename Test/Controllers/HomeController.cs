@@ -16,8 +16,29 @@ namespace Test.Controllers
         /// <summary>
         /// Генерация данных для представления Index
         /// </summary>
-        [HttpGet]
         public ActionResult Index()
+        {
+            Session["doctor-ids"] = null;
+
+            Hospital hospital;
+
+            using (var dc = new DataContext())
+            {
+                hospital = dc.Hospitals
+                    .Include(x => x.Doctors)
+                    .First();
+            }
+
+            ViewBag.CalendarDate = GetDateForCalendar(DateTime.Now);
+
+            return View(hospital);
+        }
+
+        /// <summary>
+        /// Передача в Index выбранных id специалистов
+        /// </summary>
+        [HttpGet]
+        public ActionResult InputIds()
         {
             Hospital hospital;
 
@@ -31,7 +52,7 @@ namespace Test.Controllers
             ViewBag.CalendarDate = Request.Params["date"] ?? GetDateForCalendar(DateTime.Now);
             ViewBag.Indexes = new int[] { };
 
-            if (!string.IsNullOrEmpty(Request.Params["doctor"]))
+            if (Request.Params["doctor"] != null)
             {
                 ViewBag.Indexes = Request.Params["doctor"]
                     .Split(',')
@@ -39,7 +60,7 @@ namespace Test.Controllers
                     .ToArray();
             }
 
-            return View(hospital);
+            return View("Index", hospital);
         }
 
         /// <summary>
@@ -49,11 +70,15 @@ namespace Test.Controllers
         /// <param name="date">Дата</param>
         public ActionResult ShowTimeTables(int[] doctorIds, DateTime? date)
         {
+            int[] docIds = doctorIds ?? (int[])Session["doctor-ids"]; // После перехода с Record возвращаем выбранных специалистов
+
             List<TimeTable> timeTables = new List<TimeTable>();
 
-            if (doctorIds != null && date.HasValue)
+            if (docIds != null && date.HasValue)
             {
-                foreach (var id in doctorIds)
+                Session["doctor-ids"] = docIds;
+
+                foreach (var id in docIds)
                 {
                     timeTables.Add(LoadTimeTable(id, date.Value));
                 }
@@ -121,7 +146,9 @@ namespace Test.Controllers
             {
                 using (var dc = new DataContext())
                 {
-                    hospital = dc.Hospitals.Include(x => x.Doctors).First();
+                    hospital = dc.Hospitals
+                        .Include(x => x.Doctors)
+                        .First();
                 }
                 ViewBag.CalendarDate = date ?? GetDateForCalendar(DateTime.Now);
 

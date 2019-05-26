@@ -3,10 +3,10 @@
 <div class="col-md-9">
     <div class="row">
         <h3>Расписание специалистов</h3>
-        @{ foreach (var t in Model)
+        @{ foreach (var timeTable in Model)
             {
                 <div class="col-md-2">
-                    @{Html.RenderPartial("TTColumn", t);}
+                    @{Html.RenderPartial("TTColumn", timeTable);}
                 </div>
             }
         }

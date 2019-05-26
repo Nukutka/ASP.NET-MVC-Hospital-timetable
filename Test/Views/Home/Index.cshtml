@@ -15,7 +15,7 @@
         <div class="col-md-3">
             <h3>Дата записи</h3>
             <div>
-                <form method="get" action="/Home/Index">
+                <form method="get" action="/Home/InputIds">
                     <input type="date" width="200" name="date" value="@ViewBag.CalendarDate"><br /><br />
                     <div class="scrollable-list">
                         @foreach (var doc in Model.Doctors)
