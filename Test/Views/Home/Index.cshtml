@@ -16,7 +16,7 @@
             <h3>Дата записи</h3>
             <div>
                 <form method="get" action="/Home/InputIds">
-                    <input type="date" width="200" name="date" value="@ViewBag.CalendarDate"><br /><br />
+                    <input type="date" name="date" value="@ViewBag.CalendarDate" style="width: 100%"><br /><br />
                     <div class="scrollable-list">
                         @foreach (var doc in Model.Doctors)
                         {
@@ -25,8 +25,7 @@
                         }
                     </div>
                     <br />
-                    <input type="reset" value="Сбросить" />
-                    <input type="submit" value="Выбрать" />
+                    <input type="submit" value="Выбрать" style="float: right" />
                 </form>
             </div>
         </div>

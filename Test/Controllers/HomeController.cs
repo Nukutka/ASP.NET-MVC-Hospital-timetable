@@ -18,8 +18,6 @@ namespace Test.Controllers
         /// </summary>
         public ActionResult Index()
         {
-            Session["doctor-ids"] = null;
-
             Hospital hospital;
 
             using (var dc = new DataContext())
@@ -183,6 +181,7 @@ namespace Test.Controllers
             }
 
             ViewBag.CalendarDate = GetDateForCalendar(DateTime.Parse(Request.Form["sel-date"]));
+            ViewBag.Indexes = (int[])Session["doctor-ids"];
 
             return View("Index", hospital);
         }
