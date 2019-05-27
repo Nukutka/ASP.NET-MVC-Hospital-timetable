@@ -78,7 +78,11 @@ namespace Test.Controllers
 
                 foreach (var id in docIds)
                 {
-                    timeTables.Add(LoadTimeTable(id, date.Value));
+                    TimeTable timeTable = LoadTimeTable(id, date.Value);
+                    if (timeTable != null)
+                    {
+                        timeTables.Add(timeTable);
+                    }
                 }
             }
 
